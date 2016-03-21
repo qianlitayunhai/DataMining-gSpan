@@ -1,6 +1,9 @@
 #include "output.h"
 
 namespace gspan {
+  int Output::total_patterns;
+  pthread_mutex_t Output::lock;
+
 	void Output::push_back(const std::string& str)
 	{
 		_m_buffer.push_back(str);	
@@ -38,10 +41,12 @@ namespace gspan {
 		std::stringstream ss;
 		ss << _m_output_file;
 
+    pthread_mutex_lock(&(Output::lock));
+
 		FILE* output_file = fopen(ss.str().c_str(), "a+");
 
 		for (size_t i = 0; i < _m_buffer.size(); ++i) {
-			fprintf(output_file, "t # %zu * %u\n", _m_start_idx + _m_graph[i], _m_support[i]);
+			fprintf(output_file, "t # %zu * %u\n", Output::total_patterns + _m_graph[i], _m_support[i]);
 			if (_m_parent[i] == -1)
 				fprintf(output_file, "parent : -1\n");
 			else
@@ -49,6 +54,10 @@ namespace gspan {
 			fprintf(output_file, "%s", _m_buffer[i].c_str());
 		}
 
+    Output::total_patterns += this->size();
+
 		fclose(output_file);
+
+    pthread_mutex_unlock(&(Output::lock));
 	}
 }

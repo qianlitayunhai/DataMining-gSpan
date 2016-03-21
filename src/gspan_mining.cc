@@ -181,10 +181,10 @@ namespace gspan {
 
 		size_t prev_idx = 0;
 		for (size_t i = 0; i < THREAD_NUM; ++i) {
-			_m_output[i]->set_start_idx(prev_idx);
+			//_m_output[i]->set_start_idx(prev_idx);
 			_m_output[i]->print();
 
-			prev_idx += _m_output[i]->size();
+			//prev_idx += _m_output[i]->size();
 		}	
 
 		return GSPAN_SUCCESS;
@@ -305,6 +305,12 @@ namespace gspan {
 		ss << std::endl;
 
 		_m_output[tid]->push_back(ss.str(), nsupport, _m_output[tid]->size(), prev_id);
+
+    //TODO: magic number, modify this later
+    if (_m_output[tid]->size() > 10000) {
+      _m_output[tid]->print();
+      _m_output[tid]->clear();
+    }
 
 		ss << std::endl;
 	}

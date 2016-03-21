@@ -3,12 +3,13 @@
 #include <sstream>
 #include <vector>
 #include <cstdio>
+#include <pthread.h>
 
 namespace gspan {
 	class Output {
 		public:
 			Output(const char *output_file, size_t thread_id):
-				_m_output_file(output_file), _m_tid(thread_id){}
+				_m_output_file(output_file), _m_tid(thread_id) {}
 
 			void set_start_idx(size_t idx) {
 				_m_start_idx = idx;
@@ -17,6 +18,13 @@ namespace gspan {
 			size_t size() const {
 				return _m_support.size();
 			}
+
+      void clear() {
+        this->_m_support.clear();
+        this->_m_parent.clear();
+        this->_m_graph.clear();
+        this->_m_buffer.clear();
+      }
 
 			void push_back(const std::string& str, uint32_t nsupport, size_t graph_id, int32_t parent_id);
 
@@ -28,7 +36,11 @@ namespace gspan {
 
 			void print();
 
+
 		private:
+      static int total_patterns;
+      static pthread_mutex_t lock;
+
 			size_t _m_tid;
 			FILE* _m_file;
 			std::vector<uint32_t> _m_support;

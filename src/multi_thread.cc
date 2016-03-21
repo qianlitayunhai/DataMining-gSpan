@@ -21,7 +21,6 @@ namespace gspan {
 		size_t interval = map_size / THREAD_NUM;
 		size_t tid = 0;
 		size_t idx_output = 0;
-
 		
 		for (ProjectionMap::reverse_iterator it = projection_map.rbegin(); it != projection_map.rend(); ++it) {
 			if ((it->second).size() < _m_nsupport)
